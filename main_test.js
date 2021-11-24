@@ -10,7 +10,6 @@ describe("GET request by Search", function() {
 
          function(error, response, body) {
         if (error) throw new Error(error);
-        respCode = response.statusCode;
         const expStatusCode = 2000;
         const expStatusMsg = 'OK';
         const respCode = response.statusCode;
