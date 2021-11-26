@@ -17,11 +17,11 @@ let config = {
 }
 
 
-describe("GET request with valid data ", function() {
-    it("Validate response and json schema is ok",  async function () {
+describe("GET request by Search", function() {
+    it("Validate valid response and json schema is ok",  async function () {
         const response = await axios.request(config);
-        const file4 = fs.readFileSync('./data_models/GET_model_1.json')
-        const expObject = JSON.parse(file4)
+        const jsonImp = fs.readFileSync('./data_models/GET_model_1.json')
+        const expObject = JSON.parse(jsonImp)
         const expStatusMessage = 'OK'
         const expStatusCode = 200;
 
@@ -34,11 +34,11 @@ describe("GET request with valid data ", function() {
         assert.equal(expStatusCode, respCode);
     });
 
-    it("Expected: 'Movie not found!' if no movie exist + correct Status Code/Message",  async function () {
+    it("Validate valid response and json schema for 'Movie not found!' scenario",  async function () {
         config['params']['s'] = "F8745628465"
         const response = await axios.request(config)
-        const file4 = fs.readFileSync('./data_models/GET_model_2.json')
-        const expObject = JSON.parse(file4)
+        const jsonImp = fs.readFileSync('./data_models/GET_model_2.json')
+        const expObject = JSON.parse(jsonImp)
         const expStatusMessage = 'OK'
         const expStatusCode = 200;
 
@@ -51,10 +51,10 @@ describe("GET request with valid data ", function() {
         assert.deepEqual(body, expObject)
     });
 
-    it("Expected: 'Too many results!' for value that exceed amount restriction",  async function () {
+    it("Validate valid response and json schema for 'Too many results!' scenario",  async function () {
         config['params']['s'] = "F"
-        const file4 = fs.readFileSync('./data_models/GET_model_3.json')
-        const expObject = JSON.parse(file4)
+        const jsonImp = fs.readFileSync('./data_models/GET_model_3.json')
+        const expObject = JSON.parse(jsonImp)
         const response = await axios.request(config)
         const expStatusMessage = 'OK'
         const expStatusCode = 200;
@@ -68,10 +68,10 @@ describe("GET request with valid data ", function() {
         assert.deepEqual(body, expObject)
     });
 
-    it("Empty required parameter",  async function () {
+    it("Validate valid response and json schema for empty required parameter",  async function () {
         config['params']['s'] = ""
-        const file4 = fs.readFileSync('./data_models/GET_model_3.json')
-        const expObject = JSON.parse(file4)
+        const jsonImp = fs.readFileSync('./data_models/GET_model_4.json')
+        const expObject = JSON.parse(jsonImp)
         const response = await axios.request(config)
         const expStatusMessage = 'OK'
         const expStatusCode = 200;
