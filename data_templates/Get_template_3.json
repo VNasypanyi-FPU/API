@@ -1,0 +1,10 @@
+{
+  "method": "GET",
+  "url": "https://movie-database-imdb-alternative.p.rapidapi.com/",
+  "params": {"s": "F", "r": "json", "y": "2009", "page": "1"},
+  "headers": {
+    "x-rapidapi-host": "movie-database-imdb-alternative.p.rapidapi.com",
+    "x-rapidapi-key": "0e8998a58bmsh1f691b3feebcb01p1b4eebjsn566ab1848fea"
+  }
+
+}
