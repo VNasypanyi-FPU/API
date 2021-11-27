@@ -16,7 +16,6 @@ let config = {
     params: templBody
 }
 
-
 describe("GET request by Search", function() {
     it("Validate valid response and json schema is ok",  async function () {
         const response = await axios.request(config);
@@ -83,6 +82,140 @@ describe("GET request by Search", function() {
         assert.equal(expStatusMessage, respMessage);
         assert.equal(expStatusCode, respCode);
         assert.deepEqual(body, expObject)
+    });
+
+    it("Validate search by year (optional parameter) ",  async function () {
+        config['params']['s'] = "Avengers"
+        config['params']['y'] = "2000"
+
+        const response = await axios.request(config)
+        const jsonImp = fs.readFileSync('./data_models/GET_model_6.json')
+        const expObject = JSON.parse(jsonImp)
+        const expStatusMessage = 'OK'
+        const expStatusCode = 200;
+
+        const body = response.data
+        const respCode = response.status;
+        const respMessage = response.statusText;
+
+        assert.equal(expStatusMessage, respMessage);
+        assert.equal(expStatusCode, respCode);
+        assert.deepEqual(body, expObject)
+
+    });
+
+    it("Validate search by type (optional parameter) ",  async function () {
+        config['params']['s'] = "Avengers"
+        config['params']['y'] = "2010"
+        config['params']['type'] = "series"
+
+        const response = await axios.request(config)
+        const jsonImp = fs.readFileSync('./data_models/GET_model_7.json')
+        const expObject = JSON.parse(jsonImp)
+        const expStatusMessage = 'OK'
+        const expStatusCode = 200;
+
+        const body = response.data
+        const respCode = response.status;
+        const respMessage = response.statusText;
+
+        assert.equal(expStatusMessage, respMessage);
+        assert.equal(expStatusCode, respCode);
+        assert.deepEqual(body, expObject)
+
+    });
+
+    it("Validate search by page (only required parameter) ",  async function () {
+        config['params']['s'] = "Avengers"
+        config['params']['y'] = ""
+        config['params']['r'] = ""
+        config['params']['type'] = ""
+
+        const response = await axios.request(config)
+        const jsonImp = fs.readFileSync('./data_models/GET_model_9.json')
+        const expObject = JSON.parse(jsonImp)
+        const expStatusMessage = 'OK'
+        const expStatusCode = 200;
+
+        const body = response.data
+        const respCode = response.status;
+        const respMessage = response.statusText;
+
+        assert.equal(expStatusMessage, respMessage);
+        assert.equal(expStatusCode, respCode);
+        assert.deepEqual(body, expObject)
+
+    });
+
+    it("Validate search by page (optional parameter) ",  async function () {
+        config['params']['s'] = "Avengers"
+        config['params']['y'] = "2018"
+        config['params']['page'] = "2"
+
+        const response = await axios.request(config)
+        const jsonImp = fs.readFileSync('./data_models/GET_model_8.json')
+        const expObject = JSON.parse(jsonImp)
+        const expStatusMessage = 'OK'
+        const expStatusCode = 200;
+
+        const body = response.data
+        const respCode = response.status;
+        const respMessage = response.statusText;
+
+        assert.equal(expStatusMessage, respMessage);
+        assert.equal(expStatusCode, respCode);
+        assert.deepEqual(body, expObject)
+
+    });
+
+
+    it("Validate xml body",  async function () {
+        config['params']['s'] = "Maximum Overdrive"
+        config['params']['y'] = "2009"
+        config['params']['page'] = "1"
+        config['params']['r'] = "xml"
+        const response = await axios.request(config)
+        const jsonImp = fs.readFileSync('./data_models/GET_model_5.json')
+        const expObject = JSON.parse(jsonImp)
+        const expStatusMessage = 'OK'
+        const expStatusCode = 200;
+
+        const body = response.data
+        const respCode = response.status;
+        const respMessage = response.statusText;
+
+        assert.equal(expStatusMessage, respMessage);
+        assert.equal(expStatusCode, respCode);
+        assert.equal(body, expObject)
+
+    });
+
+    it("Validate valid error for corrupted api-key",  async function () {
+        config['headers']['x-rapidapi-key'] = "555"
+        const response = await axios.request(config).catch(function (error) {
+        const errorCodeExp = 403
+        const errorMsgExp = 'Forbidden'
+
+        const errorCodeActual  = error.response['status']
+        const errorMsgActual = error.response['statusText']
+
+        assert.equal(errorCodeActual, errorCodeExp);
+        assert.equal(errorMsgActual, errorMsgExp);
+        });
+    });
+
+    it("Validate valid error for corrupted URL",  async function () {
+        config['url'] = 'https://movie-database-imdb-alternative.p.rapidapi.com555/'
+        const response = await axios.request(config).catch(function (error) {
+        const errorCodeExp = -3008
+        const errorMsgExp = 'ENOTFOUND'
+
+        const errorCodeActual  = error.errno
+        const errorMsgActual = error.code
+
+        assert.equal(errorCodeActual, errorCodeExp);
+        assert.equal(errorMsgActual, errorMsgExp);
+        });
     });
 
 });

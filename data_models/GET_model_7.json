@@ -1,0 +1,20 @@
+{
+  "Response": "True",
+  "Search": [
+    {
+      "Poster": "https://m.media-amazon.com/images/M/MV5BYzA4ZjVhYzctZmI0NC00ZmIxLWFmYTgtOGIxMDYxODhmMGQ2XkEyXkFqcGdeQXVyNjExODE1MDc@._V1_SX300.jpg",
+      "Title": "The Avengers: Earth's Mightiest Heroes",
+      "Type": "series",
+      "Year": "2010–2012",
+      "imdbID": "tt1626038"
+    },
+    {
+      "Poster": "https://m.media-amazon.com/images/M/MV5BNDA4MTZmMzgtMjk3NC00NzdkLWEyNDQtMTYwZTg3MzIxMTFhXkEyXkFqcGdeQXVyNDkwNjIxMw@@._V1_SX300.jpg",
+      "Title": "Avengers Assemble!",
+      "Type": "series",
+      "Year": "2010–",
+      "imdbID": "tt1779952"
+    }
+  ],
+  "totalResults": "2"
+}
