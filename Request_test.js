@@ -1,13 +1,13 @@
 const assert = require('chai').assert
 const fs = require("fs");
-var axios = require("axios").default;
+const axios = require("axios").default;
 
 const baseUrl = "https://movie-database-imdb-alternative.p.rapidapi.com/"
 const baseHeaders = {
     "x-rapidapi-host": "movie-database-imdb-alternative.p.rapidapi.com",
     "x-rapidapi-key": "0e8998a58bmsh1f691b3feebcb01p1b4eebjsn566ab1848fea"
 }
-const file1 = fs.readFileSync('C:/Users/vnasypanyi/IdeaProjects/IMDB_api/data_templates/Get_template_1.json')
+const file1 = fs.readFileSync('./data_templates/Get_template_1.json')
 const templBody = JSON.parse(file1)
 let config = {
     method: 'get',
@@ -101,7 +101,6 @@ describe("GET request by Search", function() {
         assert.equal(expStatusMessage, respMessage);
         assert.equal(expStatusCode, respCode);
         assert.deepEqual(body, expObject)
-
     });
 
     it("Validate search by type (optional parameter) ",  async function () {
@@ -122,7 +121,6 @@ describe("GET request by Search", function() {
         assert.equal(expStatusMessage, respMessage);
         assert.equal(expStatusCode, respCode);
         assert.deepEqual(body, expObject)
-
     });
 
     it("Validate search by page (only required parameter) ",  async function () {
@@ -144,7 +142,6 @@ describe("GET request by Search", function() {
         assert.equal(expStatusMessage, respMessage);
         assert.equal(expStatusCode, respCode);
         assert.deepEqual(body, expObject)
-
     });
 
     it("Validate search by page (optional parameter) ",  async function () {
@@ -169,7 +166,7 @@ describe("GET request by Search", function() {
     });
 
 
-    it("Validate xml body",  async function () {
+    it("Validate xml body response",  async function () {
         config['params']['s'] = "Maximum Overdrive"
         config['params']['y'] = "2009"
         config['params']['page'] = "1"
@@ -190,9 +187,24 @@ describe("GET request by Search", function() {
 
     });
 
+    it("Validate valid error for corrupted api host",  async function () {
+        config['headers']['x-rapidapi-host'] = "555"
+        await axios.request(config).catch(function (error) {
+        const errorCodeExp = 400
+        const errorMsgExp = 'Bad Request'
+
+        const errorCodeActual  = error.response['status']
+        const errorMsgActual = error.response['statusText']
+
+        assert.equal(errorCodeActual, errorCodeExp);
+        assert.equal(errorMsgActual, errorMsgExp);
+        });
+    });
+
     it("Validate valid error for corrupted api-key",  async function () {
+        config['headers']['x-rapidapi-host'] = "movie-database-imdb-alternative.p.rapidapi.com" //need to set new value due to overwritting by previous test
         config['headers']['x-rapidapi-key'] = "555"
-        const response = await axios.request(config).catch(function (error) {
+        await axios.request(config).catch(function (error) {
         const errorCodeExp = 403
         const errorMsgExp = 'Forbidden'
 
@@ -206,7 +218,7 @@ describe("GET request by Search", function() {
 
     it("Validate valid error for corrupted URL",  async function () {
         config['url'] = 'https://movie-database-imdb-alternative.p.rapidapi.com555/'
-        const response = await axios.request(config).catch(function (error) {
+        await axios.request(config).catch(function (error) {
         const errorCodeExp = -3008
         const errorMsgExp = 'ENOTFOUND'
 
