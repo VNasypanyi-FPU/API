@@ -162,9 +162,7 @@ describe("GET request by Search", function() {
         assert.equal(expStatusMessage, respMessage);
         assert.equal(expStatusCode, respCode);
         assert.deepEqual(body, expObject)
-
     });
-
 
     it("Validate xml body response",  async function () {
         config['params']['s'] = "Maximum Overdrive"
@@ -184,7 +182,6 @@ describe("GET request by Search", function() {
         assert.equal(expStatusMessage, respMessage);
         assert.equal(expStatusCode, respCode);
         assert.equal(body, expObject)
-
     });
 
     it("Validate valid error for corrupted api host",  async function () {
