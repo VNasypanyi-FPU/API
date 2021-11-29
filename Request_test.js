@@ -1,6 +1,8 @@
 const assert = require('chai').assert
 const fs = require("fs");
 const axios = require("axios").default;
+var expect = require('chai').expect
+
 
 const baseUrl = "https://movie-database-imdb-alternative.p.rapidapi.com/"
 const baseHeaders = {
@@ -17,9 +19,9 @@ let config = {
 }
 
 describe("GET request by Search", function() {
-    it("Validate valid response and json schema is ok",  async function () {
+    it("Validate DEFAULT valid response and json schema",  async function () {
         const response = await axios.request(config);
-        const jsonImp = fs.readFileSync('./data_models/GET_model_1.json')
+        const jsonImp = fs.readFileSync('./data_models/Search_Valid_Model.json')
         const expObject = JSON.parse(jsonImp)
         const expStatusMessage = 'OK'
         const expStatusCode = 200;
@@ -33,10 +35,10 @@ describe("GET request by Search", function() {
         assert.equal(expStatusCode, respCode);
     });
 
-    it("Validate valid response and json schema for 'Movie not found!' scenario",  async function () {
+    it("'Movie not found!' error if request contains invalid movie title",  async function () {
         config['params']['s'] = "F8745628465"
         const response = await axios.request(config)
-        const jsonImp = fs.readFileSync('./data_models/GET_model_2.json')
+        const jsonImp = fs.readFileSync('./data_models/Search_Error_Model.json')
         const expObject = JSON.parse(jsonImp)
         const expStatusMessage = 'OK'
         const expStatusCode = 200;
@@ -50,10 +52,11 @@ describe("GET request by Search", function() {
         assert.deepEqual(body, expObject)
     });
 
-    it("Validate valid response and json schema for 'Too many results!' scenario",  async function () {
+    it("'Too many results!' error if response body exceeds amount restriction",  async function () {
         config['params']['s'] = "F"
-        const jsonImp = fs.readFileSync('./data_models/GET_model_3.json')
+        const jsonImp = fs.readFileSync('./data_models/Search_Error_Model.json')
         const expObject = JSON.parse(jsonImp)
+        expObject ['Error'] = 'Too many results.'
         const response = await axios.request(config)
         const expStatusMessage = 'OK'
         const expStatusCode = 200;
@@ -67,10 +70,11 @@ describe("GET request by Search", function() {
         assert.deepEqual(body, expObject)
     });
 
-    it("Validate valid response and json schema for empty required parameter(title)",  async function () {
+    it("'Incorrect IMDb ID.' error if request doesn't contain title",  async function () {
         config['params']['s'] = ""
-        const jsonImp = fs.readFileSync('./data_models/GET_model_4.json')
+        const jsonImp = fs.readFileSync('./data_models/Search_Error_Model.json')
         const expObject = JSON.parse(jsonImp)
+        expObject ['Error'] = 'Incorrect IMDb ID.'
         const response = await axios.request(config)
         const expStatusMessage = 'OK'
         const expStatusCode = 200;
@@ -84,93 +88,92 @@ describe("GET request by Search", function() {
         assert.deepEqual(body, expObject)
     });
 
-    it("Validate search by year (optional parameter) ",  async function () {
+    it("Search by no default YEAR parameter ",  async function () {
         config['params']['s'] = "Avengers"
         config['params']['y'] = "2000"
 
         const response = await axios.request(config)
-        const jsonImp = fs.readFileSync('./data_models/GET_model_6.json')
-        const expObject = JSON.parse(jsonImp)
         const expStatusMessage = 'OK'
         const expStatusCode = 200;
 
-        const body = response.data
         const respCode = response.status;
         const respMessage = response.statusText;
+        const containsYearNumber = response.data['Search'].filter(x => x['Year'].includes('2000')).length
+        const allYears = response.data['Search'].length
 
         assert.equal(expStatusMessage, respMessage);
         assert.equal(expStatusCode, respCode);
-        assert.deepEqual(body, expObject)
+        assert.equal(allYears, containsYearNumber)
     });
 
-    it("Validate search by type (optional parameter) ",  async function () {
+    it("Search by no default TYPE parameter",  async function () {
         config['params']['s'] = "Avengers"
         config['params']['y'] = "2010"
         config['params']['type'] = "series"
 
         const response = await axios.request(config)
-        const jsonImp = fs.readFileSync('./data_models/GET_model_7.json')
-        const expObject = JSON.parse(jsonImp)
         const expStatusMessage = 'OK'
         const expStatusCode = 200;
 
-        const body = response.data
         const respCode = response.status;
         const respMessage = response.statusText;
+        const containsTypeNumber = response.data['Search'].filter(x => x['Type'].includes('series')).length
+        const allTypes = response.data['Search'].length
 
         assert.equal(expStatusMessage, respMessage);
         assert.equal(expStatusCode, respCode);
-        assert.deepEqual(body, expObject)
+        assert.equal(allTypes, containsTypeNumber)
+
     });
 
-    it("Validate search by title (only required parameter) ",  async function () {
+    it("Search with single TITLE parameter (other params are empty)",  async function () { //check whether we have only 1 required parameter as expected
         config['params']['s'] = "Avengers"
         config['params']['y'] = ""
         config['params']['r'] = ""
         config['params']['type'] = ""
 
         const response = await axios.request(config)
-        const jsonImp = fs.readFileSync('./data_models/GET_model_9.json')
-        const expObject = JSON.parse(jsonImp)
         const expStatusMessage = 'OK'
         const expStatusCode = 200;
 
-        const body = response.data
         const respCode = response.status;
         const respMessage = response.statusText;
+        const containsTitleNumber = response.data['Search'].filter(x => x['Title'].includes('Avengers')).length
+        const allTitles = response.data['Search'].length
 
         assert.equal(expStatusMessage, respMessage);
         assert.equal(expStatusCode, respCode);
-        assert.deepEqual(body, expObject)
+        assert.equal(allTitles, containsTitleNumber)
     });
 
-    it("Validate search by page (optional parameter) ",  async function () {
+    it("Search by no default PAGE parameter",  async function () {
         config['params']['s'] = "Avengers"
         config['params']['y'] = "2018"
         config['params']['page'] = "2"
 
         const response = await axios.request(config)
-        const jsonImp = fs.readFileSync('./data_models/GET_model_8.json')
-        const expObject = JSON.parse(jsonImp)
         const expStatusMessage = 'OK'
         const expStatusCode = 200;
+        const expItemsAmount = 6
 
-        const body = response.data
         const respCode = response.status;
         const respMessage = response.statusText;
+        const itemAmount = response.data['Search'].length
+
 
         assert.equal(expStatusMessage, respMessage);
         assert.equal(expStatusCode, respCode);
-        assert.deepEqual(body, expObject)
+        assert.equal(expItemsAmount, itemAmount);
+
     });
 
-    it("Validate xml body response",  async function () {
+    it("Search by no default DATA TYPE parameter (xml) ",  async function () {
         config['params']['s'] = "Maximum Overdrive"
         config['params']['y'] = "2009"
         config['params']['page'] = "1"
         config['params']['r'] = "xml"
         const response = await axios.request(config)
-        const jsonImp = fs.readFileSync('./data_models/GET_model_5.json')
+        const jsonImp = fs.readFileSync('./data_models/Search_Valid_XML_model.json')
         const expObject = JSON.parse(jsonImp)
         const expStatusMessage = 'OK'
         const expStatusCode = 200;
@@ -184,7 +187,7 @@ describe("GET request by Search", function() {
         assert.equal(body, expObject)
     });
 
-    it("Validate valid error for corrupted api host",  async function () {
+    it("'400 Bad Request' error for corrupted api host",  async function () {
         config['headers']['x-rapidapi-host'] = "555"
         await axios.request(config).catch(function (error) {
         const errorCodeExp = 400
@@ -198,8 +201,8 @@ describe("GET request by Search", function() {
         });
     });
 
-    it("Validate valid error for corrupted api-key",  async function () {
-        config['headers']['x-rapidapi-host'] = "movie-database-imdb-alternative.p.rapidapi.com" //need to set new value due to overwritting by previous test
+    it("'403 Forbidden' error for corrupted api key",  async function () {
+        config['headers']['x-rapidapi-host'] = "movie-database-imdb-alternative.p.rapidapi.com"
         config['headers']['x-rapidapi-key'] = "555"
         await axios.request(config).catch(function (error) {
         const errorCodeExp = 403
@@ -207,20 +210,6 @@ describe("GET request by Search", function() {
 
         const errorCodeActual  = error.response['status']
         const errorMsgActual = error.response['statusText']
-
-        assert.equal(errorCodeActual, errorCodeExp);
-        assert.equal(errorMsgActual, errorMsgExp);
-        });
-    });
-
-    it("Validate valid error for corrupted URL",  async function () {
-        config['url'] = 'https://movie-database-imdb-alternative.p.rapidapi.com555/'
-        await axios.request(config).catch(function (error) {
-        const errorCodeExp = -3008
-        const errorMsgExp = 'ENOTFOUND'
-
-        const errorCodeActual  = error.errno
-        const errorMsgActual = error.code
 
         assert.equal(errorCodeActual, errorCodeExp);
         assert.equal(errorMsgActual, errorMsgExp);
