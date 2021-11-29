@@ -25,7 +25,9 @@ axios.request(options).then(function (response) {
     }*/
 
     const test = response.data['Search'].length
-    console.log(test)
+    //console.log(test)
+    // const terst = response.data['Search'].filter(x => x['Year']).length
+    //     console.log(terst)
      //
      // test.forEach(myFunction)
      // function myFunction() {
@@ -42,6 +44,10 @@ axios.request(options).then(function (response) {
 }).catch(function (error) {
     console.error(error.response);
 });
+
+let bob = a => a + 100;
+
+const atds = bob (5)
 
 
 
