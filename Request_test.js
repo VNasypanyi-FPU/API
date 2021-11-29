@@ -67,7 +67,7 @@ describe("GET request by Search", function() {
         assert.deepEqual(body, expObject)
     });
 
-    it("Validate valid response and json schema for empty required parameter",  async function () {
+    it("Validate valid response and json schema for empty required parameter(title)",  async function () {
         config['params']['s'] = ""
         const jsonImp = fs.readFileSync('./data_models/GET_model_4.json')
         const expObject = JSON.parse(jsonImp)
@@ -123,7 +123,7 @@ describe("GET request by Search", function() {
         assert.deepEqual(body, expObject)
     });
 
-    it("Validate search by page (only required parameter) ",  async function () {
+    it("Validate search by title (only required parameter) ",  async function () {
         config['params']['s'] = "Avengers"
         config['params']['y'] = ""
         config['params']['r'] = ""
