@@ -123,7 +123,6 @@ describe("GET request by Search", function() {
         assert.equal(expStatusMessage, respMessage);
         assert.equal(expStatusCode, respCode);
         assert.equal(allTypes, containsTypeNumber)
-
     });
 
     it("Search with single TITLE parameter (other params are empty)",  async function () { //check whether we have only 1 required parameter as expected
