@@ -1,7 +1,7 @@
 const assert = require('chai').assert
 const fs = require("fs");
 const axios = require("axios").default;
-var expect = require('chai').expect
+
 
 
 const baseUrl = "https://movie-database-imdb-alternative.p.rapidapi.com/"
@@ -18,7 +18,7 @@ let config = {
     params: templBody
 }
 
-describe("GET request by Search", function() {
+describe("GET request by Search", () => {
     it(" Validate DEFAULT valid response and json schema",  async () => {
         const response = await axios.request(config);
         const jsonImp = fs.readFileSync('./data_models/Search_Valid_Model.json')
@@ -188,7 +188,7 @@ describe("GET request by Search", function() {
 
     it("'400 Bad Request' error for corrupted api host",  async () => {
         config['headers']['x-rapidapi-host'] = "555"
-        await axios.request(config).catch(function (error) {
+        await axios.request(config).catch(error => {
         const errorCodeExp = 400
         const errorMsgExp = 'Bad Request'
 
@@ -200,10 +200,10 @@ describe("GET request by Search", function() {
         });
     });
 
-    it("'403 Forbidden' error for corrupted api key",  async function () {
+    it("'403 Forbidden' error for corrupted api key",  async () => {
         config['headers']['x-rapidapi-host'] = "movie-database-imdb-alternative.p.rapidapi.com"
         config['headers']['x-rapidapi-key'] = "555"
-        await axios.request(config).catch(function (error) {
+        await axios.request(config).catch(error => {
         const errorCodeExp = 403
         const errorMsgExp = 'Forbidden'
 
